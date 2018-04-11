@@ -1,4 +1,7 @@
+//Количество пинов
 var amount = 8;
+
+//Данные для атрибутов листинга
 var listings = [];
 var titleList = [
   'Большая уютная квартира',
@@ -26,14 +29,13 @@ var photosList = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
-//У блока .map убераем класс .map--faded
+//Задаем DOM объект карты
 var mapObject = document.querySelector('.map');
-mapObject.classList.remove('map--faded');
 
-//Ищем область для меток
+//Задаем DOM объект для пинов
 var mapPins = mapObject.querySelector('.map__pins');
 
-//Ищем область фильтров
+//Задаем DOM область фильтров
 var mapFilters = mapObject.querySelector('.map__filters-container');
 
 //Задаем шаблон для пинов
@@ -46,43 +48,13 @@ var mapCardTemplate = document
   .querySelector('template')
   .content.querySelector('.map__card');
 
-// Returns a random integer between min (included) and max (included)
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+//Задаем фрагмент
+var fragment = document.createDocumentFragment();
 
-// Add consiquense string, для создания фичер-листа
-function ammendString(array) {
-  var amount = getRandomInt(1, array.length - 1);
-  var resultString = '';
+//У блока .map убераем класс .map--faded
+mapObject.classList.remove('map--faded');
 
-  for (var i = 0; i <= amount; i++) {
-    resultString += array[i];
-    if (i < amount) {
-      resultString += ', ';
-    }
-  }
-  return resultString;
-}
-
-// Shuffled array, использую для создания массива фоток
-function shuffleArray(array) {
-  var currentIndex = array.length;
-  var temporaryValue;
-  var randomIndex;
-
-  while (0 !== currentIndex) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
-
-// Создаем массив объектов listing
+//Создаем массив объектов listing
 for (var i = 0; i <= amount; i++) {
   var x = getRandomInt(300, 900);
   var y = getRandomInt(150, 500);
@@ -113,6 +85,55 @@ for (var i = 0; i <= amount; i++) {
   };
 
   listings[i] = item;
+}
+
+
+//Добавляем во фрагмент
+for (var i = 0; i < listings.length - 1; i++) {
+  fragment.appendChild(renderPins(listings[i]));
+}
+
+//Добавляем пины на страницу
+mapPins.appendChild(fragment);
+
+//Добавляем карточку на страницу
+mapObject.insertBefore(renderCard(listings[0]), mapFilters);
+
+
+// Функция генерация рандомного числа, включительно min, max
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Функция слияния строк в одну строку для создания фичер-листа
+function ammendString(array) {
+  var amount = getRandomInt(1, array.length - 1);
+  var resultString = '';
+
+  for (var i = 0; i <= amount; i++) {
+    resultString += array[i];
+    if (i < amount) {
+      resultString += ', ';
+    }
+  }
+  return resultString;
+}
+
+// Функция перемешки массива, использую для создания массива фоток
+function shuffleArray(array) {
+  var currentIndex = array.length;
+  var temporaryValue;
+  var randomIndex;
+
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }
 
 //функция рендеринга пинов
@@ -183,16 +204,3 @@ function renderCard(listing) {
 
   return mapCard;
 }
-
-//Добавляем во фрагмент
-var fragment = document.createDocumentFragment();
-
-for (var i = 0; i < listings.length - 1; i++) {
-  fragment.appendChild(renderPins(listings[i]));
-}
-
-//Добавляем пины на страницу
-mapPins.appendChild(fragment);
-
-//Добавляем карточку на страницу
-mapObject.insertBefore(renderCard(listings[0]), mapFilters);
