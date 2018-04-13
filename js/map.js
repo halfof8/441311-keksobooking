@@ -42,6 +42,17 @@ var adFormNotice = document.querySelector('.ad-form');
 var fieldsNotice = yourNotice.querySelectorAll('fieldset');
 
 var yourAdr = document.getElementById('address');
+var yourHomeType = document.getElementById('type');
+var yourHomePrice = document.getElementById('price');
+var yourRoomNumber = document.getElementById('room_number');
+var yourCapacity = document.getElementById('capacity');
+var capacityOptions = yourCapacity.querySelectorAll('option');
+
+var yourTimeIn = document.getElementById('timein');
+var yourTimeInOptions = yourTimeIn.querySelectorAll('option');
+
+var yourTimeOut = document.getElementById('timeout');
+var yourTimeOutOptions = yourTimeIn.querySelectorAll('option');
 
 
 // Задаем шаблон для пинов
@@ -117,6 +128,54 @@ for (var i = 1; i < mapPinsAll.length; i++) {
 }
 
 
+// Проверяем ввод типа жилья и изменяем плейсхолдер, минимальную цену
+yourHomeType.addEventListener('input', function (evt) {
+  var roomType = evt.target.value;
+
+  if (roomType === 'flat') {
+    yourHomePrice.placeholder = 1000;
+    yourHomePrice.min = 1000;
+  } else if (roomType === 'bungalo') {
+    yourHomePrice.placeholder = 0;
+    yourHomePrice.min = 0;
+  } else if (roomType === 'house') {
+    yourHomePrice.placeholder = 5000;
+    yourHomePrice.min = 5000;
+  } else {
+    yourHomePrice.placeholder = 10000;
+    yourHomePrice.min = 10000;
+  }
+});
+
+// Следим, чтобы в поле цены вводили только цифры
+yourHomePrice.addEventListener('input', function (evt) {
+  validateDigits (evt);
+});
+
+// Проверяем ввод количества комнат
+yourRoomNumber.addEventListener('input', function(evt) {
+  var roomNumber = evt.target.value;
+  var selectedRoomNumber = null;
+
+  for (var i = 0; i < yourCapacity.length; i++) {
+    if (yourCapacity[i].selected) {
+      selectedRoomNumber = i;
+    }
+  }
+
+  checkGuests(roomNumber, selectedRoomNumber);
+});
+
+
+// Проверяем ввод времени заезда и выезда, меняем их соответственно
+yourTimeIn.addEventListener('input', function(evt) {
+  checkTime(evt.target.value, yourTimeOut);
+});
+
+yourTimeOut.addEventListener('input', function(evt) {
+  checkTime(evt.target.value, yourTimeIn);
+});
+
 
 // ============================= Область функций
 
@@ -174,7 +233,7 @@ function createListing (id) {
   var x = getRandomInt(300, 900);
   var y = getRandomInt(150, 500);
 
-  return item = {
+  return {
     author: {
       avatar: 'img/avatars/user0' + (id + 1) + '.png'
     },
@@ -297,3 +356,63 @@ function closePopup () {
   var addedCard = mapObject.querySelector('.map__card');
   addedCard.remove();
 };
+
+// Функция валидации ввода цены
+function validateDigits (evt) {
+  var theEvent = evt || window.event;
+  var key = theEvent.keyCode || theEvent.which;
+  key = String.fromCharCode( key );
+  var regex = /[0-9]|\./;
+  if( !regex.test(key) ) {
+    theEvent.returnValue = false;
+    if(theEvent.preventDefault) theEvent.preventDefault();
+  }
+}
+
+
+// Функция изменения формы количества гостей
+function checkGuests(number, selectedNumber) {
+  if (number == 1) {
+    capacityOptions[0].disabled = true;
+    capacityOptions[1].disabled = true;
+    capacityOptions[2].disabled = false;
+    capacityOptions[3].disabled = true;
+
+    capacityOptions[2].selected = true;
+  } else if (number == 2) {
+    capacityOptions[0].disabled = true;
+    capacityOptions[1].disabled = false;
+    capacityOptions[2].disabled = false;
+    capacityOptions[3].disabled = true;
+    if (selectedNumber == 0 || selectedNumber == 3) {
+      capacityOptions[1].selected = true;
+    }
+  } else if (number == 3) {
+    capacityOptions[0].disabled = false;
+    capacityOptions[1].disabled = false;
+    capacityOptions[2].disabled = false;
+    capacityOptions[3].disabled = true;
+
+    if (selectedNumber == 3) {
+      capacityOptions[0].selected = true;
+    }
+  } else {
+    capacityOptions[0].disabled = true;
+    capacityOptions[1].disabled = true;
+    capacityOptions[2].disabled = true;
+    capacityOptions[3].disabled = false;
+
+    capacityOptions[3].selected = true;
+  }
+}
+
+// Функция выбора времени
+function checkTime(time, selectedInput) {
+  if (time == '12:00') {
+    selectedInput[0].selected = true;
+  } else if (time == '13:00') {
+    selectedInput[1].selected = true;
+  } else {
+    selectedInput[2].selected = true;
+  }
+}
