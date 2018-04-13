@@ -69,7 +69,7 @@ getAdress (draggablePin);
 
 // Создаем массив объектов listing
 for (var i = 0; i <= amount; i++) {
-  listings[i] = createListing();
+  listings[i] = createListing(i);
 }
 
 
@@ -99,22 +99,22 @@ for (var i = 1; i < mapPinsAll.length; i++) {
 }
 
 
-// Добавим карточки, если уже есть – то сначала удалим, потом добавим
+// Добавим карточку листинга, если уже есть – то сначала удалим, потом добавим
 for (var i = 1; i < mapPinsAll.length; i++) {
-  mapPinsAll[i].addEventListener("click", function (e) {
-      var addedCard = mapObject.querySelector('.map__card');
-      if (addedCard) { addedCard.remove()}
+  mapPinsAll[i].addEventListener('click', function(e) {
+    var addedCard = mapObject.querySelector('.map__card');
+    var currentCard = createCard(e.currentTarget.listingData);
+    var closeButton = document.querySelector('.popup__close');
 
-      var currentCard = createCard(e.currentTarget.listingData);
-      mapObject.insertBefore(currentCard, mapFilters);
-
-      var closeButton = document.querySelector('.popup__close');
-      closeButton.addEventListener('click', function() {
-        closePopup();
-      });
-
-     });
-  }
+    if (addedCard) {
+      addedCard.remove();
+    }
+    mapObject.insertBefore(currentCard, mapFilters);
+    closeButton.addEventListener('click', function() {
+      closePopup();
+    });
+  });
+}
 
 
 
@@ -170,13 +170,13 @@ function createPin (listing) {
 }
 
 // Функция создания листинга
-function createListing () {
+function createListing (id) {
   var x = getRandomInt(300, 900);
   var y = getRandomInt(150, 500);
 
-  var item = {
+  return item = {
     author: {
-      avatar: 'img/avatars/user0' + (i + 1) + '.png'
+      avatar: 'img/avatars/user0' + (id + 1) + '.png'
     },
 
     location: {
@@ -185,7 +185,7 @@ function createListing () {
     },
 
     offer: {
-      title: titleList[i],
+      title: titleList[id],
       address: x + ', ' + y,
       price: getRandomInt(1000, 1000000),
       type: typeList[getRandomInt(0, typeList.length - 1)],
@@ -198,8 +198,6 @@ function createListing () {
       photos: shuffleArray(photosList)
     }
   };
-
-  return item;
 }
 
 
@@ -259,13 +257,11 @@ function activateMap () {
   mapObject.classList.remove('map--faded');
   adFormNotice.classList.remove('ad-form--disabled');
 
-  for (i = 0; i < fieldsNotice.length; i++)
-  {
+  for (i = 0; i < fieldsNotice.length; i++) {
     fieldsNotice[i].disabled = false;
   }
 
   mapPinsArea.classList.remove('map--faded');
-
   getAdress (draggablePin);
 
   for (var i = 0; i < mapPinsAll.length; i++) {
@@ -284,13 +280,6 @@ function deactivateMap () {
     fieldsNotice[i].disabled = true;
   }
 };
-
-
-// Функция показа карточки
-// function showCard () {
-//   mapObject.insertBefore(renderCard(listings[0]), mapFilters);
-// }
-
 
 // Функция координаты пина
 function getAdress (el) {
