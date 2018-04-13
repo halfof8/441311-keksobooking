@@ -1,4 +1,4 @@
-//Количество пинов
+//Количество элментов листинга
 var amount = 8;
 
 //Данные для атрибутов листинга
@@ -29,76 +29,96 @@ var photosList = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
-//Задаем DOM объект карты
+// Задаем DOM объекты карты
 var mapObject = document.querySelector('.map');
+var mapPinsArea = mapObject.querySelector('.map__pins');
 
-//Задаем DOM объект для пинов
-var mapPins = mapObject.querySelector('.map__pins');
+var draggablePin = mapPinsArea.querySelector('.map__pin--main');
 
-//Задаем DOM область фильтров
 var mapFilters = mapObject.querySelector('.map__filters-container');
 
-//Задаем шаблон для пинов
+var yourNotice = document.querySelector('.notice');
+var adFormNotice = document.querySelector('.ad-form');
+var fieldsNotice = yourNotice.querySelectorAll('fieldset');
+
+var yourAdr = document.getElementById('address');
+
+
+// Задаем шаблон для пинов
 var mapPinTemplate = document
   .querySelector('template')
   .content.querySelector('.map__pin');
 
-//Задаем шаблон для карточки
+// Задаем шаблон для карточки
 var mapCardTemplate = document
   .querySelector('template')
   .content.querySelector('.map__card');
 
-//Задаем фрагмент
+// Задаем фрагмент
 var fragment = document.createDocumentFragment();
 
-//У блока .map убераем класс .map--faded
-mapObject.classList.remove('map--faded');
 
-//Создаем массив объектов listing
+
+
+
+// ============================= Основная область
+
+// Деактивируем карту, формы. Подставляем адрес в флому
+deactivateMap();
+getAdress (draggablePin);
+
+// Создаем массив объектов listing
 for (var i = 0; i <= amount; i++) {
-  var x = getRandomInt(300, 900);
-  var y = getRandomInt(150, 500);
-
-  var item = {
-    author: {
-      avatar: 'img/avatars/user0' + (i + 1) + '.png'
-    },
-
-    location: {
-      x: x,
-      y: y
-    },
-
-    offer: {
-      title: titleList[i],
-      address: x + ', ' + y,
-      price: getRandomInt(1000, 1000000),
-      type: typeList[getRandomInt(0, typeList.length - 1)],
-      rooms: getRandomInt(1, 5),
-      guests: getRandomInt(1, 10),
-      checkin: timeList[getRandomInt(0, timeList.length - 1)],
-      checkout: timeList[getRandomInt(0, timeList.length - 1)],
-      features: ammendString(featuresList),
-      description: '',
-      photos: shuffleArray(photosList)
-    }
-  };
-
-  listings[i] = item;
+  listings[i] = createListing(i);
 }
 
 
-//Добавляем во фрагмент
+
+// Активация карты
+draggablePin.addEventListener ('mouseup', function() {
+  activateMap();
+  draggablePin.removeEventListener('mouseup', function() {});
+});
+
+// Cоздадим пины
 for (var i = 0; i < listings.length - 1; i++) {
-  fragment.appendChild(renderPins(listings[i]));
+  var pinNode = createPin(listings[i]);
+  console.log(pinNode);
+  pinNode.listingData = listings[i];
+  console.log(pinNode.listingData);
+  fragment.appendChild(pinNode);
+}
+// Добавим пины на страницу
+mapPinsArea.appendChild(fragment);
+
+// Найдем пины и скроем
+mapPinsAll = mapPinsArea.querySelectorAll('.map__pin');
+
+for (var i = 1; i < mapPinsAll.length; i++) {
+  mapPinsAll[i].classList.add('hidden');
 }
 
-//Добавляем пины на страницу
-mapPins.appendChild(fragment);
 
-//Добавляем карточку на страницу
-mapObject.insertBefore(renderCard(listings[0]), mapFilters);
+// Добавим карточку листинга, если уже есть – то сначала удалим, потом добавим
+for (var i = 1; i < mapPinsAll.length; i++) {
+  mapPinsAll[i].addEventListener('click', function(e) {
+    var addedCard = mapObject.querySelector('.map__card');
+    var currentCard = createCard(e.currentTarget.listingData);
+    var closeButton = document.querySelector('.popup__close');
 
+    if (addedCard) {
+      addedCard.remove();
+    }
+    mapObject.insertBefore(currentCard, mapFilters);
+    closeButton.addEventListener('click', function() {
+      closePopup();
+    });
+  });
+}
+
+
+
+// ============================= Область функций
 
 // Функция генерация рандомного числа, включительно min, max
 function getRandomInt(min, max) {
@@ -136,8 +156,8 @@ function shuffleArray(array) {
   return array;
 }
 
-//функция рендеринга пинов
-function renderPins(listing) {
+// Функция рендеринга пинов
+function createPin (listing) {
   var mapPin = mapPinTemplate.cloneNode(true);
   mapPin.style =
     'left:' + (listing.location.x - 20) + 'px; ' +
@@ -149,8 +169,40 @@ function renderPins(listing) {
   return mapPin;
 }
 
-//функция рендеринга карточки
-function renderCard(listing) {
+// Функция создания листинга
+function createListing (id) {
+  var x = getRandomInt(300, 900);
+  var y = getRandomInt(150, 500);
+
+  return item = {
+    author: {
+      avatar: 'img/avatars/user0' + (id + 1) + '.png'
+    },
+
+    location: {
+      x: x,
+      y: y
+    },
+
+    offer: {
+      title: titleList[id],
+      address: x + ', ' + y,
+      price: getRandomInt(1000, 1000000),
+      type: typeList[getRandomInt(0, typeList.length - 1)],
+      rooms: getRandomInt(1, 5),
+      guests: getRandomInt(1, 10),
+      checkin: timeList[getRandomInt(0, timeList.length - 1)],
+      checkout: timeList[getRandomInt(0, timeList.length - 1)],
+      features: ammendString(featuresList),
+      description: '',
+      photos: shuffleArray(photosList)
+    }
+  };
+}
+
+
+// Функция рендеринга карточки
+function createCard (listing) {
   var mapCard = mapCardTemplate.cloneNode(true);
   var photoBlock = mapCard.querySelector('.popup__photos');
   var photoItem = photoBlock.querySelector('img');
@@ -198,3 +250,50 @@ function renderCard(listing) {
 
   return mapCard;
 }
+
+
+// Функция активации карты
+function activateMap () {
+  mapObject.classList.remove('map--faded');
+  adFormNotice.classList.remove('ad-form--disabled');
+
+  for (i = 0; i < fieldsNotice.length; i++) {
+    fieldsNotice[i].disabled = false;
+  }
+
+  mapPinsArea.classList.remove('map--faded');
+  getAdress (draggablePin);
+
+  for (var i = 0; i < mapPinsAll.length; i++) {
+    mapPinsAll[i].classList.remove('hidden');
+  }
+
+};
+
+
+// Функция деактивации всего на старте
+function deactivateMap () {
+  mapObject.classList.add('map--faded');
+  adFormNotice.classList.add('ad-form--disabled');
+  for (i = 0; i < fieldsNotice.length; i++)
+  {
+    fieldsNotice[i].disabled = true;
+  }
+};
+
+// Функция координаты пина
+function getAdress (el) {
+  el = el.getBoundingClientRect();
+  var globalPosition = {
+    left: el.left + window.scrollX + 20,
+    top: el.top + window.scrollY + 22
+  }
+  yourAdr.value = globalPosition.left + ', ' + globalPosition.top;
+}
+
+
+// Функция закрытия попапа
+function closePopup () {
+  var addedCard = mapObject.querySelector('.map__card');
+  addedCard.remove();
+};
