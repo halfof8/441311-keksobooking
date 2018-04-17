@@ -67,7 +67,7 @@ var yourTimeOutOptions = yourTimeIn.querySelectorAll('option');
 var submitButton = document.querySelector('.ad-form__submit');
 var clearButton = document.querySelector('.ad-form__reset');
 
-var yourDescription = document.querySelector('.description');
+var yourDescription = document.getElementById('description');
 
 var successMessage = document.querySelector('.success');
 
@@ -93,6 +93,7 @@ var fragment = document.createDocumentFragment();
 
 // Деактивируем карту, формы. Подставляем адрес в форму
 yourAdr.value = getAdress (draggablePin);
+
 
 // Создаем массив объектов listing
 for (var i = 0; i <= amount; i++) {
@@ -191,7 +192,11 @@ submitButton.addEventListener('click', function(evt) {
    if (yourAdr.checkValidity() && yourHomePrice.checkValidity() ) {
    successMessage.classList.remove('hidden');
    deactivateMap();
-   clearValues(); }
+   clearValues();
+   setTimeout(function(){
+     successMessage.classList.add('hidden');
+  }, 5000);
+  }
 });
 
 submitButton.addEventListener('invalid', function() {
@@ -472,5 +477,5 @@ function clearValues() {
   yourHomeTypeOptions[0].selected = true;
   capacityOptions[2].selected = true;
   yourAdr.value = getAdress(draggablePin);
-  yourDescription.value = "";
+  yourDescription.value = " ";
 }
