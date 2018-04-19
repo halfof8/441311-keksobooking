@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Антон Соколов](https://up.htmlacademy.ru/javascript/13/user/441311).
-* Наставник: `Неизвестно`.
+* Наставник: [Данил Чекалин](https://htmlacademy.ru/profile/id335807).
 
 ---
 
