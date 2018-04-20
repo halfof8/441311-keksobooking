@@ -30,6 +30,7 @@ var photosList = [
 ];
 
 
+
 // Задаем DOM объекты карты
 var mapObject = document.querySelector('.map');
 var mapPinsArea = mapObject.querySelector('.map__pins');
@@ -71,6 +72,7 @@ var yourDescription = document.getElementById('description');
 
 var successMessage = document.querySelector('.success');
 
+var STARTADRESS = getCoords(draggablePin);
 
 // Задаем шаблон для пинов
 var mapPinTemplate = document
@@ -100,11 +102,105 @@ for (var i = 0; i <= amount; i++) {
   listings[i] = createListing(i);
 }
 
+console.log('draggablePin offsetTop ', draggablePin.offsetTop);
+console.log('draggablePin offsetLeft ', draggablePin.offsetLeft);
+
 // Активация карты
-draggablePin.addEventListener ('mouseup', function() {
-  activateMap();
-  draggablePin.removeEventListener('mouseup', function() {});
+
+draggablePin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  console.log('Global coords  ', startCoords);
+
+  var mapBox = mapPinsArea.getBoundingClientRect();
+  // x: 94.5, y: 0, width: 1200, height: 704, top: 0
+
+
+
+  function onMouseMove(moveEvt) {
+    moveEvt.preventDefault();
+
+    console.log('Map bounding box ', mapBox);
+    console.log('draggablePin offsetTop ', draggablePin.offsetTop);
+    console.log('draggablePin offsetLeft ', draggablePin.offsetLeft);
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    console.log('Shift ', startCoords);
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    console.log('Global coords updated ', startCoords);
+
+
+    if (draggablePin.offsetTop < 0) {
+      draggablePin.style.top = 50 + 'px';
+    } else if (draggablePin.offsetTop > (mapBox.height - 50) ) {
+      draggablePin.style.top = (mapBox.height - 50) + 'px';
+    }
+    else {
+      draggablePin.style.top = (draggablePin.offsetTop - shift.y) + 'px';
+    }
+
+    if (draggablePin.offsetLeft < 0) {
+      draggablePin.style.left = 50 + 'px';
+    } else if (draggablePin.offsetLeft > (mapBox.width - 50) ) {
+      draggablePin.style.left = (mapBox.width - 50) + 'px';
+    } else {
+      draggablePin.style.left = (draggablePin.offsetLeft - shift.x) + 'px';
+    }
+
+  };
+
+
+  function onMouseUp(upEvt) {
+    upEvt.preventDefault();
+    activateMap();
+    yourAdr.value = getAdress(draggablePin);
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
 });
+
+
+
+draggablePin.ondragstart = function() {
+  return false;
+};
+
+
+// Функция координаты пина без строчки
+function getCoords(elem) {
+  var box = elem.getBoundingClientRect();
+  return {
+    top: box.top + pageYOffset,
+    left: box.left + pageXOffset
+  };
+}
+
+
+// Функция координаты пина
+function getAdress (el) {
+  el = el.getBoundingClientRect();
+  return (el.left  + pageYOffset + 20) + ', ' + (el.top + pageXOffset + 22);
+}
+
+
 
 // Cоздадим пины
 for (var i = 0; i < listings.length - 1; i++) {
@@ -381,7 +477,6 @@ function activateMap () {
   }
 
   mapPinsArea.classList.remove('map--faded');
-  getAdress (draggablePin);
 
   for (var i = 0; i < mapPinsAll.length; i++) {
     mapPinsAll[i].classList.remove('hidden');
@@ -393,23 +488,22 @@ function activateMap () {
 function deactivateMap () {
   mapObject.classList.add('map--faded');
   adFormNotice.classList.add('ad-form--disabled');
+
   for (i = 0; i < fieldsNotice.length; i++) {
     fieldsNotice[i].disabled = true;
   }
+
+  mapPinsArea.classList.add('map--faded');
+
+  draggablePin.style.left = STARTADRESS.left + 'px';
+  draggablePin.style.top = STARTADRESS.top + 'px';
+
   for (var i = 1; i < mapPinsAll.length; i++) {
     mapPinsAll[i].classList.add('hidden');
    }
 };
 
-// Функция координаты пина
-function getAdress (el) {
-  el = el.getBoundingClientRect();
-  var globalPosition = {
-    left: el.left + window.scrollX + 20,
-    top: el.top + window.scrollY + 22
-  }
-  return globalPosition.left + ', ' + globalPosition.top;
-}
+
 
 // Функция закрытия попапа
 function closePopup () {
