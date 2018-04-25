@@ -1,7 +1,6 @@
 // Файл form.js — модуль, который работает с формой объявления.
 'use strict';
 
-var yourAdr = document.getElementById('address');
 
 var successMessage = document.querySelector('.success');
 
@@ -79,7 +78,7 @@ yourTimeOut.addEventListener('input', function(evt) {
 
 // Отправка данных
 submitButton.addEventListener('click', function(evt) {
-  if (yourAdr.checkValidity() && yourHomePrice.checkValidity() ) {
+  if (window.yourAdr.checkValidity() && yourHomePrice.checkValidity() ) {
   successMessage.classList.remove('hidden');
   deactivateMap();
   clearValues();
@@ -99,15 +98,15 @@ clearButton.addEventListener('click', function() {
 });
 
 // Проверка валидности
-yourAdr.addEventListener('invalid', function (evt) {
-  if (yourAdr.validity.tooShort) {
-    yourAdr.setCustomValidity('Название не должно состоять меньше 2-х символов');
-  } else if (yourAdr.validity.tooLong) {
-    yourAdr.setCustomValidity('Название не должно превышать 100 символов');
-  } else if (yourAdr.validity.valueMissing) {
-    yourAdr.setCustomValidity('Обязательное поле');
+window.yourAdr.addEventListener('invalid', function (evt) {
+  if (window.yourAdr.validity.tooShort) {
+    window.yourAdr.setCustomValidity('Название не должно состоять меньше 2-х символов');
+  } else if (window.yourAdr.validity.tooLong) {
+    window.yourAdr.setCustomValidity('Название не должно превышать 100 символов');
+  } else if (window.yourAdr.validity.valueMissing) {
+    window.yourAdr.setCustomValidity('Обязательное поле');
   } else {
-    yourAdr.setCustomValidity('');
+    window.yourAdr.setCustomValidity('');
   }
 });
 

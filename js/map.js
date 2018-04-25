@@ -40,7 +40,7 @@ for (var i = 0; i < listings.length - 1; i++) {
 
 // Добавим пины на страницу
 mapPinsArea.appendChild(fragment);
-mapPinsAll = mapPinsArea.querySelectorAll('.map__pin');
+var mapPinsAll = mapPinsArea.querySelectorAll('.map__pin');
 
 // Деактивируем карту
 deactivateMap();
