@@ -1,3 +1,6 @@
+// Файл map.js — модуль, который управляет карточками объявлений и пинами: добавляет на страницу нужную карточку, отрисовывает пины и осуществляет взаимодействие карточки и метки на карте
+'use strict';
+
 var AMOUNT = 8;
 
 window.yourAdr = document.getElementById('address');
@@ -9,17 +12,13 @@ var draggablePin = mapPinsArea.querySelector('.map__pin--main');
 var STARTADRESS = window.util.getCoords(draggablePin);
 
 var yourNotice = document.querySelector('.notice');
-var adFormNotice = document.querySelector('.ad-form');
 var fieldsNotice = yourNotice.querySelectorAll('fieldset');
+
+var adFormNotice = document.querySelector('.ad-form');
 
 var mapFilters = mapObject.querySelector('.map__filters-container');
 
 var listings = [];
-
-// Задаем шаблон для пинов
-var mapPinTemplate = document
-  .querySelector('template')
-  .content.querySelector('.map__pin');
 
 // Задаем фрагмент
 var fragment = document.createDocumentFragment();
@@ -34,7 +33,7 @@ for (var i = 0; i <= AMOUNT; i++) {
 
 // Cоздадим пины-соседи
 for (var i = 0; i < listings.length - 1; i++) {
-  var pinNode = createPin(listings[i]);
+  var pinNode = window.createPin(listings[i]);
   pinNode.listingData = listings[i];
   fragment.appendChild(pinNode);
 }
@@ -124,18 +123,6 @@ for (var i = 1; i < mapPinsAll.length; i++) {
   });
 }
 
-// Функция рендеринга пинов
-function createPin (listing) {
-  var mapPin = mapPinTemplate.cloneNode(true);
-  mapPin.style =
-    'left:' + (listing.location.x - 20) + 'px; ' +
-    'top: ' + (listing.location.y - 40) + 'px;';
-
-  mapPin.querySelector('img').src = listing.author.avatar;
-  mapPin.querySelector('img').alt = listing.offer.title;
-
-  return mapPin;
-};
 
 // Функция деактивации всего на старте
 function deactivateMap () {

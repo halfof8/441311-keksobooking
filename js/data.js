@@ -1,4 +1,5 @@
-//Данные для атрибутов листинга
+// Файл data.js — модуль, который создаёт данные листинга
+'use strict';
 
 window.createListing = function (id) {
 
@@ -27,7 +28,6 @@ window.createListing = function (id) {
     'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
   ];
-
 
   var x = window.util.getRandomInt(300, 900);
   var y = window.util.getRandomInt(150, 500);

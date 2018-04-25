@@ -1,9 +1,5 @@
-// Файл validate.js
+// Файл form.js — модуль, который работает с формой объявления.
 'use strict';
-
-var yourNotice = document.querySelector('.notice');
-var adFormNotice = document.querySelector('.ad-form');
-var fieldsNotice = yourNotice.querySelectorAll('fieldset');
 
 var yourAdr = document.getElementById('address');
 
