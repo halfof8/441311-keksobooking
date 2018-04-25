@@ -48,7 +48,7 @@ deactivateMap();
 
 
 // Слушаем клик миши по основному пину
-draggablePin.onmousedown = function (downEvt) {
+draggablePin.addEventListener ('mousedown', function(downEvt) {
   downEvt.preventDefault();
   activateMap();
 
@@ -59,7 +59,7 @@ draggablePin.onmousedown = function (downEvt) {
 
   var mapBoxCoords = window.util.getPosition(mapPinsArea);
 
-  document.onmousemove = function (moveEvt) {
+  function onMouseMove(moveEvt) {
     moveEvt.preventDefault();
 
     var newLeft = moveEvt.pageX - shiftX - mapBoxCoords.left;
@@ -88,14 +88,17 @@ draggablePin.onmousedown = function (downEvt) {
     window.yourAdr.value = window.util.getCoords(draggablePin).left + ', ' + window.util.getCoords(draggablePin).top;
   }
 
-  document.onmouseup = function (upEvt) {
+  function onMouseUp(upEvt) {
     upEvt.preventDefault();
     window.yourAdr.value = window.util.getCoords(draggablePin).left + ', ' + window.util.getCoords(draggablePin).top;
-    document.onmousemove = document.onmouseup = null;
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
   }
 
+  document.addEventListener ('mousemove', onMouseMove);
+  document.addEventListener ('mouseup',  onMouseUp);
   return false; // disable selection start (cursor change)
-};
+});
 
 draggablePin.ondragstart = function () {
   return false;
