@@ -4,9 +4,7 @@
 (function () {
 
   // Задаем шаблон для карточки
-  var mapCardTemplate = document
-    .querySelector('template')
-    .content.querySelector('.map__card');
+  var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 
   // Функция рендеринга карточки
   window.createCard = function (listing) {
@@ -56,7 +54,6 @@
     mapCard.querySelector('img').src = listing.author.avatar;
 
     return mapCard;
-  }
+  };
 
-
-})()
+})();

@@ -21,12 +21,9 @@
   var capacityOptions = yourCapacity.querySelectorAll('option');
 
   var yourTimeIn = document.getElementById('timein');
-  var yourTimeInOptions = yourTimeIn.querySelectorAll('option');
 
   var yourTimeOut = document.getElementById('timeout');
-  var yourTimeOutOptions = yourTimeIn.querySelectorAll('option');
 
-  var submitButton = document.querySelector('.ad-form__submit');
   var clearButton = document.querySelector('.ad-form__reset');
 
   var yourDescription = document.getElementById('description');
@@ -85,7 +82,7 @@
 
   // Отправляем данные и закрываем форму
   adFormNotice.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adFormNotice), successHandler, errorHandler); 
+    window.backend.save(new FormData(adFormNotice), successHandler, errorHandler);
     evt.preventDefault();
   });
 
@@ -95,7 +92,7 @@
   });
 
   // Проверка валидности
-  window.yourAdr.addEventListener('invalid', function (evt) {
+  window.yourAdr.addEventListener('invalid', function () {
     if (window.yourAdr.validity.tooShort) {
       window.yourAdr.setCustomValidity('Название не должно состоять меньше 2-х символов');
     } else if (window.yourAdr.validity.tooLong) {
@@ -108,7 +105,7 @@
   });
 
   // Проверка валидности
-  yourHomePrice.addEventListener('invalid', function (evt) {
+  yourHomePrice.addEventListener('invalid', function () {
     if (yourHomePrice.validity.rangeOverflow) {
       yourHomePrice.setCustomValidity('Цена не должна быть больше 1 000 000');
     } else if (yourHomePrice.validity.valueMissing) {
@@ -127,7 +124,9 @@
     var regex = /[0-9]|\./;
     if (!regex.test(key)) {
       theEvent.returnValue = false;
-      if (theEvent.preventDefault) theEvent.preventDefault();
+      if (theEvent.preventDefault) { 
+        theEvent.preventDefault()
+      };
     }
   }
 
@@ -138,20 +137,20 @@
       item.disabled = true;
     });
 
-    if (number == 1) {
+    if (number === 1) {
       capacityOptions[2].disabled = false;
       capacityOptions[2].selected = true;
-    } else if (number == 2) {
+    } else if (number === 2) {
       capacityOptions[1].disabled = false;
       capacityOptions[2].disabled = false;
-      if (selectedNumber == 0 || selectedNumber == 3) {
+      if (selectedNumber === 0 || selectedNumber === 3) {
         capacityOptions[1].selected = true;
       }
-    } else if (number == 3) {
+    } else if (number === 3) {
       capacityOptions[0].disabled = false;
       capacityOptions[1].disabled = false;
       capacityOptions[2].disabled = false;
-      if (selectedNumber == 3) {
+      if (selectedNumber === 3) {
         capacityOptions[0].selected = true;
       }
     } else {
@@ -162,9 +161,9 @@
 
   // Функция выбора времени
   function checkTime(time, selectedInput) {
-    if (time == '12:00') {
+    if (time === '12:00') {
       selectedInput[0].selected = true;
-    } else if (time == '13:00') {
+    } else if (time === '13:00') {
       selectedInput[1].selected = true;
     } else {
       selectedInput[2].selected = true;
@@ -173,13 +172,13 @@
 
   // Функция очистки значений форм объявления
   function clearValues() {
-    yourHomeTitle.value = "";
-    yourHomePrice.value = "";
+    yourHomeTitle.value = '';
+    yourHomePrice.value = '';
     yourRoomNumberOptions[0].selected = true;
     yourHomeTypeOptions[0].selected = true;
     capacityOptions[2].selected = true;
     window.yourAdr.value = window.util.getCoords(draggablePin).left + ', ' + window.util.getCoords(draggablePin).top;
-    yourDescription.value = " ";
+    yourDescription.value = ' ';
   }
 
 
@@ -205,4 +204,4 @@
     document.body.insertAdjacentElement('afterbegin', node);
   }
 
-})()
+})();

@@ -91,7 +91,6 @@
       return false;
     }
 
-
     function filterByRooms(item) {
       if (item.offer.rooms >= filterRooms) {
         return true;

@@ -24,7 +24,7 @@ window.util = (function () {
       var temporaryValue;
       var randomIndex;
 
-      while (0 !== currentIndex) {
+      while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
         temporaryValue = array[currentIndex];
@@ -35,7 +35,6 @@ window.util = (function () {
       return array;
     },
     getCoords: function (elem) {
-      var box = elem.getBoundingClientRect();
       return {
         top: elem.offsetTop,
         left: elem.offsetLeft
@@ -51,3 +50,4 @@ window.util = (function () {
   };
 
 })();
+

@@ -73,6 +73,4 @@ window.yourAdr = document.getElementById('address');
     return false;
   };
 
-
-
-})()
+})();

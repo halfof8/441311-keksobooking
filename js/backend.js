@@ -2,7 +2,6 @@
 'use strict';
 
 window.backend = (function () {
-
   return {
     load: function (onLoad, onError) {
       var xhr = new XMLHttpRequest();
@@ -49,11 +48,8 @@ window.backend = (function () {
 
       xhr.timeout = 10000; // 10s
 
-
-      console.log(data);
       xhr.open('POST', 'https://js.dump.academy/keksobooking');
       xhr.send(data);
-    }
-  }
-})();
-
+    },
+  };
+}());

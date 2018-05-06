@@ -7,7 +7,6 @@
   var housingPrice = document.getElementById('housing-price');
   var housingRooms = document.getElementById('housing-rooms');
   var housingGuests = document.getElementById('housing-guests');
-  var housingFeatures = document.getElementById('housing-features');
   var featuresCheckboxes = document.querySelectorAll('.map__checkbox');
 
   var features = {
@@ -25,7 +24,7 @@
     onRoomsChange: function (data) {},
     onGuestsChange: function (data) {},
     onFeaturesChange: function (data) {}
-  }
+  };
 
   housingType.addEventListener('input', function (evt) {
     var newType = evt.target.value;
@@ -56,6 +55,8 @@
     });
   }
 
-  return window.filters = filters;
-})()
+  window.filters = filters;
+
+  return window.filters;
+})();
 
